@@ -51,7 +51,7 @@ class Attendance:
 		self.creds = ServiceAccountCredentials.from_json_keyfile_name(cred_file, self.scope)
 		self.client = gspread.authorize(self.creds)
 
-		# Get the Google Sheet name
+		# Get the Google Sheet path
 		sheet_name = self.my_students_dict['sheet']
 		self.sheet = self.client.open(sheet_name).sheet1
 		self.data = self.sheet.get_all_records()
@@ -94,21 +94,21 @@ class Attendance:
 			self.section_scores[date].update({student: score})
 
 
-	# updates the Sheets data for a specific date and clears temporary data.
+	# updates the Sheets data for a specific date and clears temporary data for that date.
 	def submitScores(self, date):
 		if(date in self.section_scores and date in self.all_sections):
 			sectionNumber = 0
 
-			for x in range(len(self.getSections())):
-				if(self.getSections()[x] == date):
+			for x in range(len(self.all_sections)):
+				if(self.all_sections[x] == date):
 					sectionNumber = x+2
 					break
 
 			if(sectionNumber != 0):
 				for student, score in self.section_scores[date].items():
 					row = 0
-					for x in range(len(self.getAllStudents())):
-						if(student == self.getAllStudents()[x]):
+					for x in range(len(self.all_students)):
+						if(student == self.all_students[x]):
 							row = x+2
 							break
 
@@ -118,26 +118,57 @@ class Attendance:
 			self.section_scores[date] = {}
 
 
-	# returns the temporary section grades
-	def getTempGrades(self):
-		return self.section_scores
+	# returns the temporary section grades  
+	def getTempGrades(self, date):
+		if (date in self.section_scores):
+			return self.section_scores[date]
+		return {}
+
+	# gets already defined section grades for a particular section, for your subset of students
+	def getDefinedGrades(self, date):
+		returnDict = {}
+		section = 0
+		# check if section exists, and find position
+		for x in range(len(self.all_sections)):
+			if(date == self.all_sections[x]):
+				section = x+2
+
+		if(section == 0):
+			return returnDict
+
+		# turn data into a key/value pair with the corresponding student.
+		
+
+		for x in self.my_students:
+			for row in range(len(self.all_students)):
+				if(x == self.all_students[row]):
+					returnDict[x] = self.sheet.cell(row+2, section).value
+					break
+
+		return returnDict
 
 # END of Attendance class
 
 
 
+#------------------------------------------------------------------------------------------------------
+
+
 # testing code
 
-p1 = Attendance()
+grader = Attendance()
 
-print("my students")
-print(p1.getMyStudents())
+#print("my students")
+#print(grader.getMyStudents())
 
-p1.addScore("Section 3", "Andrew", 2)
-p1.addScore("Section 3", "Sam", 0)
+#grader.addScore("Section 3", "Andrew", 2)
+grader.addScore("Section 2", "Sam", 0)
 
-p1.submitScores("Section 3")
+print(grader.getTempGrades("Section 2"))
 
+grader.submitScores("Section 2")
+
+print(grader.getDefinedGrades("Section 2"))
 
 
 
