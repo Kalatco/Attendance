@@ -6,7 +6,6 @@
 #
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from pprint import pprint
 import json
 import sys
 
@@ -59,7 +58,7 @@ class Attendance:
 		# students in your section, excluding row/col describers.
 		self.my_students = self.my_students_dict['students']
 		self.all_students = self.sheet.col_values(1)[1:]
-		self.all_sections = self.sheet.row_values(1)[1:]
+		self.all_sections = self.sheet.row_values(1)[4:]
 
 
 	# return a list of a user saved sub-set of users.
@@ -101,7 +100,7 @@ class Attendance:
 
 			for x in range(len(self.all_sections)):
 				if(self.all_sections[x] == date):
-					sectionNumber = x+2
+					sectionNumber = x+5
 					break
 
 			if(sectionNumber != 0):
@@ -131,7 +130,7 @@ class Attendance:
 		# check if section exists, and find position
 		for x in range(len(self.all_sections)):
 			if(date == self.all_sections[x]):
-				section = x+2
+				section = x+5
 
 		if(section == 0):
 			return returnDict
@@ -158,13 +157,12 @@ class Attendance:
 
 grader = Attendance()
 
-#print("my students")
-#print(grader.getMyStudents())
+grader.addScore("Section 2", "Bill", 2)
+grader.addScore("Section 2", "Sam", 2)
+grader.addScore("Section 2", "Andrew", 2)
+grader.addScore("Section 2", "Max", 2)
 
-#grader.addScore("Section 3", "Andrew", 2)
-grader.addScore("Section 2", "Sam", 0)
 
-print(grader.getTempGrades("Section 2"))
 
 grader.submitScores("Section 2")
 
