@@ -4,8 +4,6 @@ Andrew Raftovich, Fall 2019
 
 ## About
 
-NOTE: This program is still in its early stages of production.
-
 This program was created to simplify attendance taking through a Google Sheets document by instead of
 inserting scores manually into the Sheet, this program provides a GUI (Graphical User Interface) to allow
 users to easily insert/modify scores for their students in their section from the full list of students in 

@@ -3,9 +3,9 @@ from Attendance import Attendance
 
 # File: run.py
 #
-# About: This file contains a basic working GUI for the project, this code is
-#		 still far from completion.
+# About: This file contains a working GUI, but code clean up is still in process.
 #
+gui = None
 
 SUBMIT_BUTTON_TEXT = "Submit grades"
 COLORS = {
@@ -24,6 +24,7 @@ grader.updateJson()
 
 className = grader.getClassName()
 currentSection = grader.getSections()[-1]
+
 allSections = grader.getSections()
 
 studentsDict = grader.getDefinedGrades(currentSection)
@@ -31,48 +32,22 @@ tableData = grader.getTablesDictionary()
 
 unsortedStudents = grader.getUnsortedStudents()
 
-# converts the strings of data to integers.
-for x in studentsDict:
-	if studentsDict[x] == '':
-		studentsDict[x] = -1
-	else:
-		studentsDict[x] = int(studentsDict[x])
+
 
 #----------------------------------------------------------------------
 
 # Updates the attendance number for the current student.
-def updateAttendance(event):
-	std = event.widget.cget("text")
-
-	if(studentsDict[std] == -1):
-		studentsDict[std] = 2
-	
-	elif (studentsDict[std] == 2):
-		studentsDict[std] = 1
-
-	elif (studentsDict[std] == 1):
-		studentsDict[std] = 0
-
-	else:
-		studentsDict[std] = -1
-
-	score = studentsDict[std]
-	if(score == -1):
-		score = ''
-
-	updateScore(std, score)
-	event.widget.config(background=COLORS[studentsDict[std]])
-	submit.config(fg="red")
-
-def updateScore(std, score):
-	grader.addScore(currentSection, std, score)
 
 
-def submitGrades(event):
+def updateScore11(std, score):
+	pass
+
+
+def submitGrades11(event):
 	grader.submitScores(currentSection)
 	submit.config(fg="green3")
 
-def changeSection(event):
+def changeSection11():
 	tempSec = []
 	popup = Tk()
 	popup.wm_title("Change Section")
@@ -88,68 +63,16 @@ def changeSection(event):
 	popFrame.mainloop()
 
 
-def setSection(event):
+def setSection11(event):
 	name = event.widget.cget("text")
+
 	currentSection = name
 	studentsDict = grader.getDefinedGrades(name)
-	print("oof")
+
+	gui = sectionViewer(className, name)
+	gui.printBody()
 
 #--------------------------------------------------------------------------------------------
-
-root = Tk()
-root.title("Attendance Program")
-#root.resizable(False, False)
-
-# header
-header = Label(root, text=className+": "+currentSection, font=("arial", 16, "bold"), height=2)
-header.bind("<Button 1>", changeSection)
-header.pack(fill=X)
-
-# body
-#for std in sorted(students.keys()):
-#	temp = Label(root, text=students[std], bg = COLORS[students[std]], fg="black", font=("arial",16))
-#	temp.config(height=2)
-#	temp.pack(fill=X)
-#	temp.bind("<Button 1>", updateAttendance)
-#	myButtons.append(temp)
-
-# print students who are in a table
-for table in sorted(tableData.keys()):
-	tempTable = Label(root, text=table, bg="black", fg="white", font=("arial",16))
-	tempTable.config(height=2)
-	tempTable.pack(fill=X)
-	myTables.append(tempTable)
-	for std in sorted(tableData[table]):
-		temp = Label(root, text=std, bg = COLORS[studentsDict[std]], fg="black", font=("arial",16))
-		temp.config(height=2)
-		temp.pack(fill=X)
-		temp.bind("<Button 1>", updateAttendance)
-		myStudents.append(temp)
-
-# print students not in a table
-if(len(unsortedStudents) > 0):
-	unsorted = Label(root, text="Remaining Students", bg="black", fg="white", font=("arial",16))
-	unsorted.config(height=2)
-	unsorted.pack(fill=X)
-	for std in sorted(unsortedStudents):
-		temp = Label(root, text=std, bg = COLORS[studentsDict[std]], fg="black", font=("arial",16))
-		temp.config(height=2)
-		temp.pack(fill=X)
-		temp.bind("<Button 1>", updateAttendance)
-		myUnsortedStudents.append(temp)
-
-
-# footer
-submit = Label(root, text=SUBMIT_BUTTON_TEXT, font=("arial", 16,"bold"), height=2, fg="green3")
-submit.pack(fill=X)
-submit.bind("<Button 1>", submitGrades)
-
-
-frame = Frame(root, width=300, height=len(studentsDict)*2)
-frame.pack()
-frame.mainloop()
-
-
 
 
 #
@@ -157,36 +80,139 @@ frame.mainloop()
 #
 class sectionViewer:
 
-	root = Tk()
+	root = None
 	myStudents = []
 	myUnsortedStudents = []
 	myTables = []
+	header = None
+	submit = None
+	frame = None
+	sectionLabel = None
 
-	def __init__(self, className, sectionName, studentDictionary, ):
-		pass
+	def __init__(self, className, sectionName):
+		self.sectionLabel = sectionName
+		self.studentScoreDictionary = grader.getDefinedGrades(self.sectionLabel)
+		self.root = Tk()
+		self.root.title(className)
 
-	def printHead(self):
-		pass
+		# converts the strings of data to integers.
+		for x in self.studentScoreDictionary:
+			if self.studentScoreDictionary[x] == '':
+				self.studentScoreDictionary[x] = -1
+			else:
+				self.studentScoreDictionary[x] = int(self.studentScoreDictionary[x])
 
-	def printTables(self):
-		pass
 
-	def printUnsortedStudents(self):
-		pass
+	def printBody(self):
+		# header
+		self.header = Label(self.root, text=className+": "+self.sectionLabel, font=("arial", 16, "bold"), height=2)
+		self.header.bind("<Button 1>", self.changeSection) #changeSection() is a global method
+		self.header.pack(fill=X)
 
-	def printSubmit(self):
-		pass
+		# print tables
+		for table in sorted(tableData.keys()):
+			tempTable = Label(self.root, text=table, bg="black", fg="white", font=("arial",16))
+			tempTable.config(height=2)
+			tempTable.pack(fill=X)
+			self.myTables.append(tempTable)
+			for std in sorted(tableData[table]):
+				temp = Label(self.root, text=std, bg = COLORS[self.studentScoreDictionary[std]], fg="black", font=("arial",16))
+				temp.config(height=2)
+				temp.pack(fill=X)
+				temp.bind("<Button 1>", self.updateAttendance)
+				self.myStudents.append(temp)
 
-	def updateAttendance(self, event):
-		pass
+		# print students not in a table
+		if(len(unsortedStudents) > 0):
+			unsorted = Label(self.root, text="Remaining Students", bg="black", fg="white", font=("arial",16))
+			unsorted.config(height=2)
+			unsorted.pack(fill=X)
+			for std in sorted(unsortedStudents):
+				temp = Label(self.root, text=std, bg = COLORS[self.studentScoreDictionary[std]], fg="black", font=("arial",16))
+				temp.config(height=2)
+				temp.pack(fill=X)
+				temp.bind("<Button 1>", self.updateAttendance)
+				self.myUnsortedStudents.append(temp)
 
-	def updateScore(self, event):
-		pass
+		# footer
+		self.submit = Label(self.root, text=SUBMIT_BUTTON_TEXT, font=("arial", 16,"bold"), height=2, fg="green3")
+		self.submit.pack(fill=X)
+		self.submit.bind("<Button 1>", self.submitGrades)
+
+		self.frame = Frame(self.root, width=300, height=len(self.studentScoreDictionary)*2)
+		self.frame.pack()
+		self.frame.mainloop()
+
+	def changeSection(self, event):
+		self.root.destroy()
+		ChangeSection()
 
 	def submitGrades(self, event):
-		pass
+		grader.submitScores(self.sectionLabel)
+		self.submit.config(fg="green3")
+
+	def updateAttendance(self, event):
+		std = event.widget.cget("text")
+
+		if(self.studentScoreDictionary[std] == -1):
+			self.studentScoreDictionary[std] = 2
+	
+		elif (self.studentScoreDictionary[std] == 2):
+			self.studentScoreDictionary[std] = 1
+
+		elif (self.studentScoreDictionary[std] == 1):
+			self.studentScoreDictionary[std] = 0
+
+		else:
+			self.studentScoreDictionary[std] = -1
+
+		score = self.studentScoreDictionary[std]
+		if(score == -1):
+			score = ''
+
+		self.updateScore(std, score)
+		event.widget.config(background=COLORS[self.studentScoreDictionary[std]])
+		self.submit.config(fg="red")
+
+	def updateScore(self, std, score):
+		grader.addScore(self.sectionLabel, std, score)
 
 # End of sectionViewer class
 
+#----------------------------------------------------------------------------
+class ChangeSection:
 
+	root = None
+	tempSec = []
+
+	def __init__(self):
+		
+		self.root = Tk()
+		self.root.wm_title("Change Section")
+		for sec in sorted(allSections):
+			temp = Label(self.root, text=sec, fg="black", font=("arial",16))
+			temp.config(height=2)
+			temp.pack(fill=X)
+			temp.bind("<Button 1>", self.setSection)
+			self.tempSec.append(temp)
+
+		self.popFrame = Frame(self.root, width=200, height=len(allSections)*2)
+		self.popFrame.pack()
+		self.popFrame.mainloop()
+
+	def setSection(self, event):
+		name = event.widget.cget("text")
+		currentSection = name
+		studentsDict = grader.getDefinedGrades(name)
+
+		self.root.destroy()
+		gui = sectionViewer(className, name)
+		gui.printBody()
+
+# End of ChangeSection Class.
+
+#----------------------------------------------------------------------------
+
+gui = sectionViewer(className, currentSection)
+gui.printBody()
 

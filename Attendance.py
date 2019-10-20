@@ -163,8 +163,6 @@ class Attendance:
 			return returnDict
 
 		# turn data into a key/value pair with the corresponding student.
-		
-
 		for x in self.my_students:
 			for row in range(len(self.all_students)):
 				if(x == self.all_students[row]):
