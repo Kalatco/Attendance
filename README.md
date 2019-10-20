@@ -11,11 +11,12 @@ the class.
 
 ![example of Google Sheets](/example.png)
 
-The file contains some basic information before the section scores which will not be affected by the program.
+The file contains some information before the section scores which will not be affected by the program.
 Section scores are in a range from 0 (no points) to 2 (full points).
 
 ## Usage
 
+Clicking this picture connects to YouTube to provide a video demonstration of the project.
 [<img src="https://img.youtube.com/vi/16Vw8-nWzkg/maxresdefault.jpg" width="50%">](https://youtu.be/16Vw8-nWzkg)   
 
 1. To get the program to work, the owner of the Google Sheets document must supply users with the 
