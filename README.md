@@ -16,16 +16,13 @@ Section scores are in a range from 0 (no points) to 2 (full points).
 
 ## Usage
 
+[<img src="https://img.youtube.com/vi/16Vw8-nWzkg/maxresdefault.jpg" width="50%">](https://youtu.be/16Vw8-nWzkg)   
+
 1. To get the program to work, the owner of the Google Sheets document must supply users with the 
    Google Drive API credentials JSON file which must be inserted into the same file as the other
    Python classes.
 
-2. After that, users can run through the start up process for the program and add all students inside their section
-   and also create table numbers to further simplify attendance taking.  The students and tables you choose will be 
-   saved locally on your computer so you will only need to do this step once.
-
-3. When setup is complete, you will be able to log on to the application and quickly be able to access and modify grades
-   for a specified section.
+2. Not currently setup
 
 ## Dependencies
 
