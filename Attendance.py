@@ -1,9 +1,11 @@
 # File: Attendance.py
 # Author: Andrew Raftovich
 # Date: Fall 2019
+# Contact: AndrewRaftovich@gmail.com
 #
 # About: This class connects to a Google Sheets document to modify and append data as directed.
 #
+print("loading...give me a few seconds.")
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
@@ -157,16 +159,16 @@ class Attendance:
 
 grader = Attendance()
 
-grader.addScore("Section 2", "Bill", 2)
-grader.addScore("Section 2", "Sam", 2)
-grader.addScore("Section 2", "Andrew", 2)
-grader.addScore("Section 2", "Max", 2)
+#grader.addScore("Section 2", "Bill", 2)
+#grader.addScore("Section 2", "Sam", 2)
+#grader.addScore("Section 2", "Andrew", 2)
+#grader.addScore("Section 2", "Max", 2) 	# since max is not in this section, his grades are unchanged.
 
 
 
-grader.submitScores("Section 2")
+#grader.submitScores("Section 2")
 
-print(grader.getDefinedGrades("Section 2"))
+#print(grader.getDefinedGrades("Section 2"))
 
 
 

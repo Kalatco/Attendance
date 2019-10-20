@@ -1,12 +1,10 @@
 # Attendance Program
 
-## Author
-
-Andrew Raftovich
+Created by Andrew Raftovich, Fall 2019
 
 ## About
 
-UPDATE: This program is still in its early stages of production and the GUI is not setup yet.
+NOTE: This program is still in its early stages of production.
 
 This program was created to simplify attendance taking through a Google Sheets document by instead of
 inserting scores manually into the Sheet, this program provides a GUI (Graphical User Interface) to allow
@@ -28,10 +26,9 @@ Section scores are in a range from 0 (no points) to 2 (full points).
    and also create table numbers to furthur simplify attendance taking.  The students and tables they choose will be 
    saved locally inside another JSON file.
 
+3. When setup is complete, you will be able to log on to the application and quickly be able to access and modify grades
+   for a specified section.
+
 ## Dependencies
 
 	Python, Tkinter, and Bash Scripting
-
-## Date
-
-Fall 2019
