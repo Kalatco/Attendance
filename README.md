@@ -8,8 +8,8 @@ NOTE: This program is still in its early stages of production.
 
 This program was created to simplify attendance taking through a Google Sheets document by instead of
 inserting scores manually into the Sheet, this program provides a GUI (Graphical User Interface) to allow
-users to easily insert scores for their particular subset of students in their section from the full list
-of students in the class.
+users to easily insert/modify scores for their students in their section from the full list of students in 
+the class.
 
 ![example of Google Sheets](/example.png)
 
@@ -23,8 +23,8 @@ Section scores are in a range from 0 (no points) to 2 (full points).
    Python classes.
 
 2. After that, users can run through the start up process for the program and add all students inside their section
-   and also create table numbers to furthur simplify attendance taking.  The students and tables they choose will be 
-   saved locally inside another JSON file.
+   and also create table numbers to further simplify attendance taking.  The students and tables you choose will be 
+   saved locally on your computer so you will only need to do this step once.
 
 3. When setup is complete, you will be able to log on to the application and quickly be able to access and modify grades
    for a specified section.

@@ -80,6 +80,12 @@ class Attendance:
 	def getClassName(self):
 		return self.my_students_dict["class"]
 
+	def getTablesDictionary(self):
+		return self.my_students_dict["tables"]
+
+	def getUnsortedStudents(self):
+		return self.my_students_dict["unsorted"]
+
 	# updates the JSON file with changed students or sections.
 	def updateJson(self):
 		jsonFile = open(INPUT_FILE, "w+")
@@ -93,8 +99,18 @@ class Attendance:
 			if(student == definedStudent):
 				self.my_students.append(student)
 				self.my_students_dict["students"].append(student)
+				self.my_students_dict["unsorted"].append(student)
 				break
 
+	# adds a table to the json data
+	def addTable(self, table):
+		self.my_students_dict["tables"][table] = []
+
+	# add a student to a specific table in the json data
+	def addStudentToTable(self, table, student):
+		if(table in self.my_students_dict["tables"]):
+			self.my_students_dict["tables"][table].append(student)
+			self.my_students_dict["unsorted"].remove(student)
 
 	# adds a temporary grade to a student in the sub-set.
 	def addScore(self, date, student, score):
@@ -179,7 +195,9 @@ def studentInfoDoesNotExist(className, sheetName):
 		"keyFile": "creds.json",
 		"sheet": sheetName,
 		"class": className,
-		"students": ["Andrew", "Sam", "Bill"]
+		"students": [],
+		"unsorted": [],
+		"tables": {}
 	}
 	if(not doesStudentInfoExist()):
 		with open(INPUT_FILE, 'w') as outfile:
