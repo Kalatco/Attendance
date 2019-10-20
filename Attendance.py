@@ -8,8 +8,10 @@
 print("loading...give me a few seconds.")
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from pprint import pprint
 import json
 import sys
+import os.path
 
 INPUT_FILE = "stdinfo.json"
 
@@ -45,23 +47,20 @@ class Attendance:
 			print("file not found, now ending program")
 			sys.exit()
 
-			# TODO: If file not found, create a json file and prompt info from the user.
-
 		# Authenticate input file
-		cred_file = self.my_students_dict['keyFile']
+		cred_file = self.my_students_dict["keyFile"]
 		self.creds = ServiceAccountCredentials.from_json_keyfile_name(cred_file, self.scope)
 		self.client = gspread.authorize(self.creds)
 
 		# Get the Google Sheet path
-		sheet_name = self.my_students_dict['sheet']
+		sheet_name = self.my_students_dict["sheet"]
 		self.sheet = self.client.open(sheet_name).sheet1
 		self.data = self.sheet.get_all_records()
 
 		# students in your section, excluding row/col describers.
-		self.my_students = self.my_students_dict['students']
+		self.my_students = self.my_students_dict["students"]
 		self.all_students = self.sheet.col_values(1)[1:]
 		self.all_sections = self.sheet.row_values(1)[4:]
-
 
 	# return a list of a user saved sub-set of users.
 	def getMyStudents(self):
@@ -77,12 +76,23 @@ class Attendance:
 	def getAllStudents(self):
 		return(self.all_students)
 
+	# returns a string of the defined Classroom name (CSC 210)
+	def getClassName(self):
+		return self.my_students_dict["class"]
+
+	# updates the JSON file with changed students or sections.
+	def updateJson(self):
+		jsonFile = open(INPUT_FILE, "w+")
+		jsonFile.write(json.dumps(self.my_students_dict))
+		jsonFile.close()
+
 
 	# adds a student to the sub-set that already exists in the Sheets Data.
 	def addStudent(self, student):
 		for definedStudent in self.all_students:
 			if(student == definedStudent):
 				self.my_students.append(student)
+				self.my_students_dict["students"].append(student)
 				break
 
 
@@ -93,7 +103,6 @@ class Attendance:
 
 		if(student in self.my_students):
 			self.section_scores[date].update({student: score})
-
 
 	# updates the Sheets data for a specific date and clears temporary data for that date.
 	def submitScores(self, date):
@@ -150,26 +159,43 @@ class Attendance:
 
 # END of Attendance class
 
+#-----------------------------------------------------------------------------------------------------
+# About: Functions defined in this class are used to check if the user has the proper files installed.
+#		 This code should always be ran before creating a Attendance class instance.
 
+# check if program contains necessary files.
+def doesStudentInfoExist():
+	return os.path.exists(INPUT_FILE)
+
+# run after doesStudentInfoExist() to check credentials
+def doesStudentCredsExist():
+	f = open(INPUT_FILE, 'r')
+	text = json.load(f)
+	return os.path.exists(text["keyFile"])
+
+# create necessary file if it doesnt exist.
+def studentInfoDoesNotExist(className, sheetName):
+	data = {
+		"keyFile": "creds.json",
+		"sheet": sheetName,
+		"class": className,
+		"students": ["Andrew", "Sam", "Bill"]
+	}
+	if(not doesStudentInfoExist()):
+		with open(INPUT_FILE, 'w') as outfile:
+			json.dump(data, outfile)
 
 #------------------------------------------------------------------------------------------------------
 
 
-# testing code
+#	Code Demonstration
 
-grader = Attendance()
+
+#grader = Attendance()
 
 #grader.addScore("Section 2", "Bill", 2)
 #grader.addScore("Section 2", "Sam", 2)
 #grader.addScore("Section 2", "Andrew", 2)
 #grader.addScore("Section 2", "Max", 2) 	# since max is not in this section, his grades are unchanged.
 
-
-
-#grader.submitScores("Section 2")
-
-#print(grader.getDefinedGrades("Section 2"))
-
-
-
-
+#grader.submitScores("Section 2") 	# submits changes to the Google Sheets file

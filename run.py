@@ -1,6 +1,11 @@
 from tkinter import *
 from Attendance import Attendance
 
+# File: run.py
+#
+# About: This file is still in PlayGround mode.  So the code is definitely not close to being finalized.
+#
+
  #!/usr/bin/env python -W ignore::DeprecationWarning
 
 #window = Tk()
@@ -39,6 +44,7 @@ from Attendance import Attendance
 #----------------------------------------------------
 
 #frame.mainloop() 
+SUBMIT_BUTTON_TEXT = "Submit grades"
 
 colors = {
 	-1: "grey",
@@ -47,16 +53,14 @@ colors = {
 	2: "green",
 
 }
-
-
-
 myButtons = []
-
 grader = Attendance()
-
 print("Program has loaded.")
+grader.updateJson()
 
-students = grader.getDefinedGrades("Section 2")
+className = grader.getClassName()
+currentSection = grader.getSections()[-1]
+students = grader.getDefinedGrades(currentSection)
 
 for x in students:
 	if students[x] == '':
@@ -89,11 +93,11 @@ def updateAttendance(event):
 	submit.config(fg="red")
 
 def updateScore(std, score):
-	grader.addScore("Section 2", std, score)
+	grader.addScore(currentSection, std, score)
 
 
 def submitGrades(event):
-	grader.submitScores("Section 2")
+	grader.submitScores(currentSection)
 	submit.config(fg="green")
 
 
@@ -101,12 +105,13 @@ def submitGrades(event):
 
 root = Tk()
 root.title("Attendance Program")
+root.resizable(False, False)
 
 #one = Label(root, text="One", bg="red",fg="white")
 #one.pack()
 
 # header
-header = Label(root, text="CSC 210: Section 2", font=("arial", 16, "bold"), height=2)
+header = Label(root, text=className+": "+currentSection, font=("arial", 16, "bold"), height=2)
 header.pack(fill=X)
 
 # body
@@ -118,7 +123,7 @@ for student in sorted(students.keys()):
 	myButtons.append(temp)
 
 # footer
-submit = Label(root, text="Submit Grades", font=("arial", 16,"bold"), height=2, fg="green")
+submit = Label(root, text=SUBMIT_BUTTON_TEXT, font=("arial", 16,"bold"), height=2, fg="green")
 submit.pack(fill=X)
 submit.bind("<Button 1>", submitGrades)
 

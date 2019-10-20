@@ -1,6 +1,6 @@
 # Attendance Program
 
-Created by Andrew Raftovich, Fall 2019
+Andrew Raftovich, Fall 2019
 
 ## About
 
