@@ -15,7 +15,7 @@ The file contains some information before the section scores which will not be a
 Section scores are in a range from 0 (no points) to 2 (full points).
 
 ## Usage
-```
+```diff
 + GREEN 	- 2 points
 ! ORANGE 	- 1 point
 - RED 		- 0 points
