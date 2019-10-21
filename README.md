@@ -28,7 +28,15 @@ Clicking this picture connects to YouTube to provide a video demonstration of th
    Google Drive API credentials JSON file which must be inserted into the same file as the other
    Python classes.
 
-2. Not currently setup
+2. Run the start up file to get your students and tables setup.
+'''Python
+	Python3 startup.py
+'''
+
+3. The program is now setup.  Run the run.py file
+'''Python
+	Python3 run.py
+'''
 
 ## Dependencies
 
