@@ -3,7 +3,7 @@
 # Contact: AndrewRaftovich@gmail.com
 #
 # About: This program allows users to easily modify student section participation scores 
-#		 without accessing the Google Sheets document using a GUI.
+#		 without accessing the Google Sheets document by using a GUI.
 #
 from tkinter import *
 from Attendance import Attendance
@@ -50,10 +50,12 @@ unsortedStudents = grader.getUnsortedStudents()
 class SectionViewer:
 
 	root = None
+	changeWindowRoot = None
 	header = None
 	submit = None
 	frame = None
 	sectionLabel = None
+	isDataSaved = True
 
 	def __init__(self, className, sectionName):
 		self.sectionLabel = sectionName
@@ -109,16 +111,47 @@ class SectionViewer:
 
 	# Prompts user to change section when clicked.
 	def changeSection(self, event):
+		if(self.isDataSaved):
+			self.root.destroy()
+			ChangeSection()
+		else:
+			self.changeWindowRoot = Tk()
+
+			prompt = Label(self.changeWindowRoot, text="You have unsaved data, continue?", fg="black", font=("arial",16))
+			prompt.config(height=2)
+			prompt.pack(fill=X)
+
+			buttonYes = Label(self.changeWindowRoot, text="Yes", bg="green", font=("arial",16))
+			buttonYes.config(height=2)
+			buttonYes.pack(fill=X)
+			buttonYes.bind("<Button 1>", self.overrideSectionChange)
+
+			buttonNo = Label(self.changeWindowRoot, text="No", bg="red", font=("arial",16))
+			buttonNo.config(height=2)
+			buttonNo.pack(fill=X)
+			buttonNo.bind("<Button 1>", self.cancel)
+
+			self.changeWindowRoot.mainloop()
+
+	# Cancels the action to change the current section.
+	def cancel(self, event):
+		self.changeWindowRoot.destroy()
+
+	# overrides the warning message and changes the section with unsaved data.
+	def overrideSectionChange(self, event):
+		self.changeWindowRoot.destroy()
 		self.root.destroy()
 		ChangeSection()
 
 	# submits the scores to the Google Sheets
 	def submitGrades(self, event):
+		self.isDataSaved = True
 		grader.submitScores(self.sectionLabel)
 		self.submit.config(fg="green3")
 
 	# Updates the numerical value of a student.
 	def updateAttendance(self, event):
+		self.isDataSaved = False
 		std = event.widget.cget("text")
 
 		if(self.studentScoreDictionary[std] == -1):
@@ -171,10 +204,12 @@ class ChangeSection:
 		gui = SectionViewer(className, name)
 		gui.printBody()
 
+	def cancel(self):
+		pass
+
 # End of ChangeSection Class.
 #----------------------------------------------------------------------------
 
 # Runs the startup code.
 gui = SectionViewer(className, currentSection)
 gui.printBody()
-
