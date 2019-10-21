@@ -1,89 +1,55 @@
+# File: run.py
+# Author: Andrew Raftovich, Fall 2019
+# Contact: AndrewRaftovich@gmail.com
+#
+# About: This program allows users to easily modify student section participation scores 
+#		 without accessing the Google Sheets document using a GUI.
+#
 from tkinter import *
 from Attendance import Attendance
 
-# File: run.py
-#
-# About: This file contains a working GUI, but code clean up is still in process.
-#
-gui = None
-
+# Global variables.
 SUBMIT_BUTTON_TEXT = "Submit grades"
+UNSORTED_STUDENTS_TEXT = "Unsorted students"
+CHANGE_CURRENT_SECTION_TITLE = "Change Section"
 COLORS = {
 	-1: "grey",
 	0: "red",
 	1: "orange",
 	2: "green",
-
 }
-myStudents = []
-myUnsortedStudents = []
-myTables = []
+
+# The main page GUI that gets changed with each section change.
+gui = None
+
+# Creates the Attendance Instance and alerts user that the program is loaded once this class loads.
 grader = Attendance()
 print("Program has loaded.")
-grader.updateJson()
 
+# Gets the name of the class this program is being used for.
 className = grader.getClassName()
-currentSection = grader.getSections()[-1]
 
+# List of all the sections from the Sheets file.
 allSections = grader.getSections()
 
+# The current section that will be displayed.
+currentSection = allSections[-1]
+
+# List of students
 studentsDict = grader.getDefinedGrades(currentSection)
+
+# List of table numbers and students in those tables
 tableData = grader.getTablesDictionary()
 
+# List of students who are not in a table.
 unsortedStudents = grader.getUnsortedStudents()
 
-
-
-#----------------------------------------------------------------------
-
-# Updates the attendance number for the current student.
-
-
-def updateScore11(std, score):
-	pass
-
-
-def submitGrades11(event):
-	grader.submitScores(currentSection)
-	submit.config(fg="green3")
-
-def changeSection11():
-	tempSec = []
-	popup = Tk()
-	popup.wm_title("Change Section")
-	for sec in sorted(allSections):
-		temp = Label(popup, text=sec, fg="black", font=("arial",16))
-		temp.config(height=2)
-		temp.pack(fill=X)
-		temp.bind("<Button 1>", setSection)
-		tempSec.append(temp)
-
-	popFrame = Frame(popup, width=200, height=len(allSections)*2)
-	popFrame.pack()
-	popFrame.mainloop()
-
-
-def setSection11(event):
-	name = event.widget.cget("text")
-
-	currentSection = name
-	studentsDict = grader.getDefinedGrades(name)
-
-	gui = sectionViewer(className, name)
-	gui.printBody()
-
 #--------------------------------------------------------------------------------------------
-
-
-#
 # About: This class creates a new Tkinter window and displays the selected section.
 #
-class sectionViewer:
+class SectionViewer:
 
 	root = None
-	myStudents = []
-	myUnsortedStudents = []
-	myTables = []
 	header = None
 	submit = None
 	frame = None
@@ -102,7 +68,7 @@ class sectionViewer:
 			else:
 				self.studentScoreDictionary[x] = int(self.studentScoreDictionary[x])
 
-
+	# Prints the main page of the applications
 	def printBody(self):
 		# header
 		self.header = Label(self.root, text=className+": "+self.sectionLabel, font=("arial", 16, "bold"), height=2)
@@ -114,17 +80,16 @@ class sectionViewer:
 			tempTable = Label(self.root, text=table, bg="black", fg="white", font=("arial",16))
 			tempTable.config(height=2)
 			tempTable.pack(fill=X)
-			self.myTables.append(tempTable)
+
 			for std in sorted(tableData[table]):
 				temp = Label(self.root, text=std, bg = COLORS[self.studentScoreDictionary[std]], fg="black", font=("arial",16))
 				temp.config(height=2)
 				temp.pack(fill=X)
 				temp.bind("<Button 1>", self.updateAttendance)
-				self.myStudents.append(temp)
 
 		# print students not in a table
 		if(len(unsortedStudents) > 0):
-			unsorted = Label(self.root, text="Remaining Students", bg="black", fg="white", font=("arial",16))
+			unsorted = Label(self.root, text=UNSORTED_STUDENTS_TEXT, bg="black", fg="white", font=("arial",16))
 			unsorted.config(height=2)
 			unsorted.pack(fill=X)
 			for std in sorted(unsortedStudents):
@@ -132,7 +97,6 @@ class sectionViewer:
 				temp.config(height=2)
 				temp.pack(fill=X)
 				temp.bind("<Button 1>", self.updateAttendance)
-				self.myUnsortedStudents.append(temp)
 
 		# footer
 		self.submit = Label(self.root, text=SUBMIT_BUTTON_TEXT, font=("arial", 16,"bold"), height=2, fg="green3")
@@ -143,14 +107,17 @@ class sectionViewer:
 		self.frame.pack()
 		self.frame.mainloop()
 
+	# Prompts user to change section when clicked.
 	def changeSection(self, event):
 		self.root.destroy()
 		ChangeSection()
 
+	# submits the scores to the Google Sheets
 	def submitGrades(self, event):
 		grader.submitScores(self.sectionLabel)
 		self.submit.config(fg="green3")
 
+	# Updates the numerical value of a student.
 	def updateAttendance(self, event):
 		std = event.widget.cget("text")
 
@@ -170,49 +137,44 @@ class sectionViewer:
 		if(score == -1):
 			score = ''
 
-		self.updateScore(std, score)
+		grader.addScore(self.sectionLabel, std, score)
 		event.widget.config(background=COLORS[self.studentScoreDictionary[std]])
 		self.submit.config(fg="red")
 
-	def updateScore(self, std, score):
-		grader.addScore(self.sectionLabel, std, score)
-
-# End of sectionViewer class
-
-#----------------------------------------------------------------------------
+# End of SectionViewer class
+#---------------------------------------------------------------------------------------
+# About: This class creates a new page to prompt the user to change the current section.
+#
 class ChangeSection:
-
 	root = None
-	tempSec = []
 
 	def __init__(self):
-		
 		self.root = Tk()
-		self.root.wm_title("Change Section")
+		self.root.wm_title(CHANGE_CURRENT_SECTION_TITLE)
 		for sec in sorted(allSections):
 			temp = Label(self.root, text=sec, fg="black", font=("arial",16))
 			temp.config(height=2)
 			temp.pack(fill=X)
 			temp.bind("<Button 1>", self.setSection)
-			self.tempSec.append(temp)
 
 		self.popFrame = Frame(self.root, width=200, height=len(allSections)*2)
 		self.popFrame.pack()
 		self.popFrame.mainloop()
 
+	# Changes the main GUI to the current section.
 	def setSection(self, event):
 		name = event.widget.cget("text")
 		currentSection = name
 		studentsDict = grader.getDefinedGrades(name)
 
 		self.root.destroy()
-		gui = sectionViewer(className, name)
+		gui = SectionViewer(className, name)
 		gui.printBody()
 
 # End of ChangeSection Class.
-
 #----------------------------------------------------------------------------
 
-gui = sectionViewer(className, currentSection)
+# Runs the startup code.
+gui = SectionViewer(className, currentSection)
 gui.printBody()
 
