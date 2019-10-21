@@ -5,6 +5,9 @@
 # About: This program allows users to easily modify student section participation scores 
 #		 without accessing the Google Sheets document by using a GUI.
 #
+
+#!/usr/bin/python
+
 from tkinter import *
 from Attendance import Attendance
 

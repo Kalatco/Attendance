@@ -66,11 +66,9 @@ class Attendance:
 	def getMyStudents(self):
 		return self.my_students
 
-
 	# return a list of all updated sections
 	def getSections(self):
 		return(self.all_sections)
-
 
 	# return a list of all updated students
 	def getAllStudents(self):
@@ -104,11 +102,15 @@ class Attendance:
 
 	# adds a table to the json data
 	def addTable(self, table):
-		self.my_students_dict["tables"][table] = []
+		if(table not in self.my_students_dict["tables"]):
+			self.my_students_dict["tables"][table] = []
+		else:
+			print("table already exits, no changes")
 
 	# add a student to a specific table in the json data
 	def addStudentToTable(self, table, student):
-		if(table in self.my_students_dict["tables"]):
+		if(table not in self.my_students_dict["tables"]):
+			print(self.my_students_dict["tables"])
 			self.my_students_dict["tables"][table].append(student)
 			self.my_students_dict["unsorted"].remove(student)
 
@@ -171,6 +173,25 @@ class Attendance:
 
 		return returnDict
 
+	# gets a list of all the defined sections that students are in from the google sheets.
+	def getSectionNumbers(self):
+		sectionDictionary = {}
+		returnList = []
+		for x in self.sheet.col_values(4)[1:]:
+			if x not in sectionDictionary:
+				sectionDictionary[x] = None
+
+		for x in sorted(sectionDictionary):
+			returnList.append(x)
+		return returnList
+
+	def addStudentsInSection(self, sectionNumber):
+		for x in range(1, len(self.sheet.col_values(1))):
+			if(self.sheet.cell(x+1, 4).value == sectionNumber):
+				self.addStudent(self.sheet.cell(x+1,1).value)
+		return self.my_students_dict["unsorted"]
+
+
 # END of Attendance class
 
 #-----------------------------------------------------------------------------------------------------
@@ -188,7 +209,7 @@ def doesStudentCredsExist():
 	return os.path.exists(text["keyFile"])
 
 # create necessary file if it doesnt exist.
-def studentInfoDoesNotExist(className, sheetName):
+def createStudentInfoFile(className, sheetName):
 	data = {
 		"keyFile": "creds.json",
 		"sheet": sheetName,
