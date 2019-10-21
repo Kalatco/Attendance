@@ -29,14 +29,14 @@ Clicking this picture connects to YouTube to provide a video demonstration of th
    Python classes.
 
 2. Run the start up file to get your students and tables setup.
-'''Python
+```Python
 	Python3 startup.py
-'''
+```
 
 3. The program is now setup.  Run the run.py file
-'''Python
+```Python
 	Python3 run.py
-'''
+```
 
 ## Dependencies
 
