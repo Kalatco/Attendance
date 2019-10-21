@@ -16,10 +16,10 @@ Section scores are in a range from 0 (no points) to 2 (full points).
 
 ## Usage
 
-GREEN:	2 points
-ORANGE:	1 point
-RED:	0 points
-GREY:	no entry
+GREEN 	- 2 points<br/>
+ORANGE 	- 1 point<br/>
+RED 	- 0 points<br/>
+GREY 	- no entry<br/>
 
 Clicking this picture connects to YouTube to provide a video demonstration of the project.
 [<img src="https://img.youtube.com/vi/16Vw8-nWzkg/maxresdefault.jpg" width="75%">](https://youtu.be/16Vw8-nWzkg)   
