@@ -58,7 +58,7 @@ class Attendance:
 		self.data = self.sheet.get_all_records()
 
 		# students in your section, excluding row/col describers.
-		self.my_students = self.my_students_dict["students"]
+		self.my_students = list(self.my_students_dict["students"].keys())
 		self.all_students = self.sheet.col_values(1)[1:]
 		self.all_sections = self.sheet.row_values(1)[4:]
 
@@ -96,7 +96,7 @@ class Attendance:
 		for definedStudent in self.all_students:
 			if(student == definedStudent):
 				self.my_students.append(student)
-				self.my_students_dict["students"].append(student)
+				self.my_students_dict["students"][student] = ''
 				self.my_students_dict["unsorted"].append(student)
 				break
 
@@ -109,8 +109,7 @@ class Attendance:
 
 	# add a student to a specific table in the json data
 	def addStudentToTable(self, table, student):
-		if(table not in self.my_students_dict["tables"]):
-			print(self.my_students_dict["tables"])
+		if(table in self.my_students_dict["tables"]):
 			self.my_students_dict["tables"][table].append(student)
 			self.my_students_dict["unsorted"].remove(student)
 
@@ -214,7 +213,7 @@ def createStudentInfoFile(className, sheetName):
 		"keyFile": "creds.json",
 		"sheet": sheetName,
 		"class": className,
-		"students": [],
+		"students": {},
 		"unsorted": [],
 		"tables": {}
 	}

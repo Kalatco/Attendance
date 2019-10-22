@@ -97,7 +97,7 @@ st = os.stat("run.py")
 os.chmod("run.py", st.st_mode | stat.S_IEXEC)
 
 print("---------------------------")
-print("Start up is finished, dont run this file again.")
-print("Type \'grade\' to run the full program")
+print("Start up is finished.")
+print("Type \'python3 run.py\' to run the full program")
 print("---------------------------")
 
