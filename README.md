@@ -25,6 +25,8 @@ GREEN - 2 points, ORANGE - 1 point, RED- 0 points, & GREY - no points.
 
 The program alerts the user when they try to exit the page with unsaved data. If the user agrees, the data will be ignored and the new page will launch, otherwise the user can save and exit.
 
+## Setup
+
 1. To get the program to work, the owner of the Google Sheets document must supply users with the 
    Google Drive API credentials JSON file which must be inserted into the same file as the other
    Python classes.
