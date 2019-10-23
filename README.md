@@ -16,10 +16,14 @@ Section scores are in a range from 0 (no points) to 2 (full points).
 
 ## Usage
 
-![](demo.gif)
+![](demo1.gif)
 
 The different colors are used to represent attendance in a simplified way; 
 GREEN - 2 points, ORANGE - 1 point, RED- 0 points, & GREY - no points.
+
+![](demo2.gif)
+
+The program alerts the user when they try to exit the page with unsaved data. If the user agrees, the data will be ignored and the new page will launch, otherwise the user can save and exit.
 
 1. To get the program to work, the owner of the Google Sheets document must supply users with the 
    Google Drive API credentials JSON file which must be inserted into the same file as the other
